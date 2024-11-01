@@ -1,0 +1,19 @@
+{
+  "restaurant": "a",
+  "contact": "olive",
+  "menu": {
+    "categories": [
+      {
+        "name": "a",
+        "items": [
+          {
+            "name": "a",
+            "price": "a",
+            "description": "a"
+          }
+        ]
+      }
+    ]
+  },
+  "theme": "olive"
+}

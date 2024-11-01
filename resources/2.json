@@ -1,0 +1,29 @@
+{
+  "restaurant": "drek",
+  "contact": "313",
+  "menu": {
+    "categories": [
+      {
+        "name": "bla",
+        "items": [
+          {
+            "name": "bla",
+            "price": "1€",
+            "description": "blablabl"
+          }
+        ]
+      },
+      {
+        "name": "cat2",
+        "items": [
+          {
+            "name": "bd",
+            "price": "1€",
+            "description": "cačkjlčkvjr"
+          }
+        ]
+      }
+    ]
+  },
+  "theme": null
+}

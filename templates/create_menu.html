@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Create Menu</title>
+    <!-- Include Bulma CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <style>
+        .box {
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+<section class="section">
+    <div class="container">
+        <h1 class="title">Create Menu</h1>
+        <form action="/save_menu" method="post">
+            <input type="hidden" name="id" value="{{ id }}">
+            <!-- Restaurant Name -->
+            <div class="field">
+                <label class="label">Restaurant Name</label>
+                <div class="control">
+                    <input class="input" type="text" name="restaurant" placeholder="Restaurant Name" required>
+                </div>
+            </div>
+            <!-- Contact Information -->
+            <div class="field">
+                <label class="label">Contact</label>
+                <div class="control">
+                    <input class="input" type="text" name="contact" placeholder="Contact Information">
+                </div>
+            </div>
+            <div class="field"></div>
+                <label class="label">Tema</label>
+                <div class="control">
+                    <input class="input" type="text" name="contact" value="olive">
+                </div>
+            </div>
+            <!-- Categories and Items -->
+            <div class="field">
+                <label class="label">Categories</label>
+                <div class="control">
+                    {% for i in range(end=2) %}
+                    <div class="box">
+                        <!-- Category Name -->
+                        <div class="field">
+                            <label class="label">Category {{ i + 1 }} Name</label>
+                            <input class="input" type="text" name="category_name_{{ i }}" placeholder="Category Name">
+                        </div>
+                        <!-- Items -->
+                        <div class="field">
+                            <label class="label">Items</label>
+                            {% for j in range(end=3) %}
+                            <div class="box">
+                                <!-- Item Name -->
+                                <div class="field">
+                                    <label class="label">Item {{ j + 1 }} Name</label>
+                                    <input class="input" type="text" name="item_name_{{ i }}_{{ j }}" placeholder="Item Name">
+                                </div>
+                                <!-- Item Price -->
+                                <div class="field">
+                                    <label class="label">Item {{ j + 1 }} Price</label>
+                                    <input class="input" type="text" name="item_price_{{ i }}_{{ j }}" placeholder="Item Price">
+                                </div>
+                                <!-- Item Description -->
+                                <div class="field">
+                                    <label class="label">Item {{ j + 1 }} Description</label>
+                                    <textarea class="textarea" name="item_description_{{ i }}_{{ j }}" placeholder="Item Description"></textarea>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <!-- Submit Button -->
+            <div class="field">
+                <div class="control">
+                    <button class="button is-primary" type="submit">Save Menu</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+</body>
+</html>
