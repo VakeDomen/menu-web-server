@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ restaurant.restaurant }}</title>
+
+    <!-- Include Bulma CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    
+    {% if restaurant.theme == "olive" %}
+        <link rel="stylesheet" href="/static/theme_olive.css">
+    {% endif %}
+
+    <!-- Custom JavaScript for tabs and accordion functionality -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Tab functionality
+            const tabs = document.querySelectorAll('.tabs li');
+            const tabsContent = document.querySelectorAll('.tab-content');
+
+            tabs.forEach((tab) => {
+                tab.addEventListener('click', () => {
+                    const target = tab.dataset.target;
+
+                    // Remove 'is-active' class from all tabs and content
+                    tabs.forEach((t) => t.classList.remove('is-active'));
+                    tabsContent.forEach((content) => content.classList.add('is-hidden'));
+
+                    // Add 'is-active' class to the selected tab and display the content
+                    tab.classList.add('is-active');
+                    document.getElementById(target).classList.remove('is-hidden');
+                });
+            });
+
+            // Accordion functionality
+            const accordions = document.querySelectorAll('.accordion-trigger');
+
+            accordions.forEach((acc) => {
+                acc.addEventListener('click', () => {
+                    const content = acc.nextElementSibling;
+                    acc.classList.toggle('is-active');
+                    content.classList.toggle('is-hidden');
+                });
+            });
+        });
+    </script>
+
+    
+        
+</head>
+<body>
+<section class="section">
+    <div class="container">
+
+        <!-- Header -->
+        <h1 class="title has-text-centered">{{ restaurant.restaurant }}</h1>
+
+        <!-- Tabs Navigation -->
+        <div class="tabs is-toggle is-fullwidth is-centered">
+            <ul>
+                {% for category in restaurant.menu.categories %}
+                    <li class="{% if loop.first %}is-active{% endif %}" data-target="tab{{ loop.index0 }}">
+                        <a>{{ category.name }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- Tab Content Sections -->
+        {% for category in restaurant.menu.categories %}
+            <div id="tab{{ loop.index0 }}" class="tab-content{% if not loop.first %} is-hidden{% endif %}">
+                <div class="box">
+                    <table class="table is-fullwidth">
+                        <tbody>
+                            {% for item in category.items %}
+                                {% if item.description %}
+                                    <!-- Item with description (accordion) -->
+                                    <tr class="is-item">
+                                        <td>{{ item.name }}</td>
+                                        <td class="is-price has-text-right">{{ item.price }}</td>
+                                    </tr>
+                                    <tr class="is-description">
+                                        <td colspan="2">{{ item.description }}</td>
+                                    </tr>
+                                {% else %}
+                                    <!-- Item without description -->
+                                    <tr class="is-item">
+                                        <td>{{ item.name }}</td>
+                                        <td class="is-price has-text-right">{{ item.price }}</td>
+                                    </tr>
+                                {% endif %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        {% endfor %}
+
+    </div>
+</section>
+</body>
+</html>
