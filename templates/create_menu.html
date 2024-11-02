@@ -9,8 +9,17 @@
     <!-- Include Bulma CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
     <style>
+
+        .label {
+            font-size: 13px;
+        }
         .box {
             margin-bottom: 1rem;
+            padding: 2%;
+        }
+
+        .section {
+            padding: 2%;
         }
 
         #loading {
@@ -37,6 +46,10 @@
         .remove-button {
             margin-left: 0.5rem;
         }
+
+        .level {
+            display: flex;
+        }
     </style>
 </head>
 
@@ -44,23 +57,36 @@
 
     <section class="section">
         <div class="container">
-            <h1 class="title">Create Menu</h1>
+            <h1 class="title has-text-centered">Create Menu</h1>
 
             <!-- File Input and Parse Button -->
             <div id="imageupload" class="field">
                 <label class="label">Upload Menu Image</label>
-                <div class="control">
+                <div class="level">
+                    <div class="level-left">
+                        <button class="button is-link" id="parse-button" type="button" disabled>Parse</button>
+                    </div>
+                    <div class="level-right">
+                        <button class="button is-link" id="parse-manual" type="button">Mannual</button>
+                    </div>
+                </div>
+                <div class="control has-text-centered">
                     <button class="button" id="gallery-button" type="button">Select from Gallery</button>
+                    <br>
                     <button class="button" id="camera-button" type="button">Take Photo</button>
                     <!-- Hidden file inputs -->
                     <input class="input" type="file" id="gallery-input" accept="image/*" style="display: none;">
                     <input class="input" type="file" id="camera-input" accept="image/*" capture="environment"
                         style="display: none;">
                 </div>
-                <figure class="image is-128x128">
-                    <img id="image-preview" src="#" alt="Image Preview" style="display: none;">
-                </figure>
-                <button class="button is-link" id="parse-button" type="button" disabled>Parse</button>
+                <div class="level">
+                    <div class="level-item">
+                        <figure class="image is-128x128 has-text-centered">
+                            <img id="image-preview" src="#" alt="Image Preview" style="display: none;">
+                        </figure>
+                    </div>
+                </div>
+                
             </div>
 
             <div id="loading">
@@ -70,6 +96,12 @@
             <!-- Form for Menu Creation -->
             <div id="menu">
                 <form action="/save_menu" method="post" id="menu-form">
+                     <!-- Submit Button -->
+                     <div class="field has-text-centered">
+                        <div class="control">
+                            <button class="button is-primary" type="submit">Save Menu</button>
+                        </div>
+                    </div>
                     <input type="hidden" name="id" value="{{ id }}">
                     <!-- Restaurant Name -->
                     <div class="field">
@@ -86,27 +118,50 @@
                         </div>
                     </div>
                     <!-- Theme -->
-                    <div class="field">
+                    <div id="theme-input" class="field has-text-centered">
                         <label class="label">Theme</label>
                         <div class="control">
-                            <input class="input" type="text" name="theme" value="olive">
+                            <!-- Olive Theme Option -->
+                            <label class="radio">
+                                <input type="radio" name="theme" value="none">
+                                Brez
+                            </label>
+                            
+                            <label class="radio">
+                                <input type="radio" name="theme" value="olive">
+                                Olive
+                            </label>
+                    
+                            <!-- Blue Theme Option -->
+                            <label class="radio">
+                                <input type="radio" name="theme" value="blue">
+                                Dark
+                            </label>
+                    
+                            <!-- Red Theme Option -->
+                            <label class="radio">
+                                <input type="radio" name="theme" value="red">
+                                Light
+                            </label>
                         </div>
                     </div>
+                    
                     <!-- Categories and Items -->
                     <div class="field">
-                        <label class="label">Categories</label>
+                        <div class="level">
+                            <div class="level-left">
+                                <label class="label">Categories</label>
+                            </div>
+                            <div class="level-right">
+                            </div>
+                        </div>
                         <div id="categories-container">
                             <!-- Categories will be dynamically added here -->
                         </div>
-                        <button type="button" class="button is-link is-light" id="add-category-button">Add
-                            Category</button>
+                        <button type="button" class="button is-link is-light" id="add-category-button">Add Category</button>
+
                     </div>
-                    <!-- Submit Button -->
-                    <div class="field">
-                        <div class="control">
-                            <button class="button is-primary" type="submit">Save Menu</button>
-                        </div>
-                    </div>
+                   
                 </form>
             </div>
         </div>
@@ -117,12 +172,14 @@
         document.addEventListener('DOMContentLoaded', () => {
             const imagePreview = document.getElementById('image-preview');
             const parseButton = document.getElementById('parse-button');
+            const parseManualButton = document.getElementById("parse-manual");
             const menuForm = document.getElementById('menu-form');
             const categoriesContainer = document.getElementById('categories-container');
+            const themeInput = document.getElementById("theme-input");
 
-            const imageUploadDiv = document.getElementById("imageupload")
-            const loadingDiv = document.getElementById("loading")
-            const menuDiv = document.getElementById("menu")
+            const imageUploadDiv = document.getElementById("imageupload");
+            const loadingDiv = document.getElementById("loading");
+            const menuDiv = document.getElementById("menu");
 
             const galleryButton = document.getElementById('gallery-button');
             const cameraButton = document.getElementById('camera-button');
@@ -148,6 +205,9 @@
                 cameraInput.click();
             });
 
+            loadedCssFiles = [];
+            
+
             // Handle image selection
             function handleImageSelection(input) {
                 const file = input.files[0];
@@ -170,6 +230,8 @@
                 }
             }
 
+
+
             galleryInput.addEventListener('change', () => {
                 handleImageSelection(galleryInput);
             });
@@ -177,6 +239,28 @@
             cameraInput.addEventListener('change', () => {
                 handleImageSelection(cameraInput);
             });
+
+            parseManualButton.addEventListener('click', () => {
+                // Initialize with an empty category if no data is parsed
+                prefillForm({
+                    restaurant: "",
+                    contact: "",
+                    theme: "",
+                    menu: {
+                        categories: []
+                    }
+                });
+                if (categoriesContainer.childElementCount === 0) {
+                    addCategory();
+                    menuDiv.style.display = "block";
+                }
+                imageUploadDiv.style.display = "none";
+                menuDiv.style.display = "block";
+            })
+
+            function longUrl(url) {
+                return "/static/theme_" + url + ".css"
+            }
 
             // Handle Parse Button Click
             parseButton.addEventListener('click', async (event) => {
@@ -252,12 +336,21 @@
                 // Set restaurant name, contact, and theme
                 menuForm.elements['restaurant'].value = parsedData.restaurant || '';
                 menuForm.elements['contact'].value = parsedData.contact || '';
-                menuForm.elements['theme'].value = parsedData.theme || 'olive';
+                menuForm.elements['theme'].value = parsedData.theme || '';
 
                 // Iterate over categories
                 parsedData.menu.categories.forEach((category) => {
                     addCategory(category);
                 });
+                
+                themeInput.addEventListener("change", (event) => {
+                    while (loadedCssFiles.length > 0) {
+                        let url = loadedCssFiles.pop();
+                        unloadCss(url)
+                    }
+                    
+                    loadCss(longUrl(event.target.value))
+                })
             }
 
             function moveItemToCategory(itemBox, newCategoryIndex) {
@@ -353,8 +446,6 @@
                 editCategoryNameInput.addEventListener('input', () => {
                     categoryNameInput.value = editCategoryNameInput.value;
                     categoryTitle.textContent = editCategoryNameInput.value || `Category ${i + 1}`;
-                    updateCategoryOptionsInItems();
-                    reindexItemsInCategory();
                 });
 
                 editCategoryNameControl.appendChild(editCategoryNameInput);
@@ -370,6 +461,10 @@
                 categoryContent.appendChild(itemsContainer);
 
                 // Add Item Button
+                const buttonContainer = document.createElement('div');
+                buttonContainer.classList.add('items-container');
+                categoryContent.appendChild(buttonContainer);
+
                 const addItemButton = document.createElement('button');
                 addItemButton.type = 'button';
                 addItemButton.classList.add('button', 'is-small', 'is-link', 'is-light', 'add-item-button');
@@ -379,7 +474,7 @@
                     addItem(i, itemsContainer);
                 });
 
-                categoryContent.appendChild(addItemButton);
+                buttonContainer.appendChild(addItemButton);
 
                 // Append existing items
                 if (categoryData && categoryData.items) {
@@ -446,15 +541,20 @@
                 const itemIndex = itemsContainer.childElementCount;
 
                 const itemBox = document.createElement('div');
-                itemBox.classList.add('box', 'item-box');
+                itemBox.classList.add('box', 'item-box', 'is-description');
                 itemBox.dataset.categoryIndex = currentCategoryIndex;
                 itemBox.dataset.itemIndex = itemIndex;
 
                 // Remove Item Button
+                const removeItemRow = document.createElement('div');
+                removeItemRow.classList.add('has-text-right')
+
                 const removeItemButton = document.createElement('button');
                 removeItemButton.type = 'button';
                 removeItemButton.classList.add('button', 'is-small', 'is-danger', 'remove-button');
                 removeItemButton.textContent = 'Remove Item';
+
+                removeItemRow.appendChild(removeItemButton)
 
                 removeItemButton.addEventListener('click', () => {
                     itemsContainer.removeChild(itemBox);
@@ -464,14 +564,13 @@
 
                 // Move to Category Dropdown
                 const moveCategoryField = document.createElement('div');
-                moveCategoryField.classList.add('field');
+                moveCategoryField.classList.add('level');
                 const moveCategoryLabel = document.createElement('label');
-                moveCategoryLabel.classList.add('label');
+                moveCategoryLabel.classList.add('level-left');
                 moveCategoryLabel.textContent = 'Move to Category';
                 const moveCategoryControl = document.createElement('div');
-                moveCategoryControl.classList.add('control');
+                moveCategoryControl.classList.add('level-right', 'mt-0');
                 const moveCategorySelect = document.createElement('select');
-                moveCategorySelect.classList.add('input');
 
                 // Populate category options
                 categoriesList.forEach(cat => {
@@ -505,11 +604,11 @@
                 // Item Description
                 const itemDescField = createTextareaField(`Item Description`, `item_description_${currentCategoryIndex}_${itemIndex}`, itemData ? itemData.description || '' : '');
 
-                itemBox.appendChild(removeItemButton);
-                itemBox.appendChild(moveCategoryField); // Add move to category field
+                itemBox.appendChild(removeItemRow);
                 itemBox.appendChild(itemNameField);
                 itemBox.appendChild(itemPriceField);
                 itemBox.appendChild(itemDescField);
+                itemBox.appendChild(moveCategoryField); 
 
                 itemsContainer.appendChild(itemBox);
             }
@@ -562,6 +661,57 @@
                 addCategory();
             });
         });
+
+        function loadCss(url) {
+            // Check if the CSS is already loaded to prevent duplicates
+            if (document.querySelector(`link[href="${url}"]`)) {
+                console.warn(`CSS file "${url}" is already loaded.`);
+                return;
+            }
+
+            // Create a new link element
+            const link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.type = 'text/css';
+            link.href = url;
+            link.id = `css-${encodeURIComponent(url)}`; // Optional: Assign an ID for easier reference
+
+            // Optionally, handle load and error events
+            link.onload = () => {
+                console.log(`CSS file "${url}" has been loaded successfully.`);
+                loadedCssFiles.push(url)
+            };
+
+            link.onerror = () => {
+                console.error(`Failed to load CSS file "${url}".`);
+            };
+
+            // Append the link element to the head
+            document.head.appendChild(link);
+        }
+
+
+        function unloadCss(url) {
+            console.log("unloading " + url + "...")
+            // Select all link elements with the matching href
+            const links = document.querySelectorAll(`link[href="${url}"]`);
+
+            if (links.length === 0) {
+                console.warn(`No CSS file found with URL "${url}".`);
+                return;
+            }
+
+            // Remove each found link element from the head
+            links.forEach(link => {
+                if (link.parentNode) {
+                    link.parentNode.removeChild(link);
+                    console.log(`CSS file "${url}" has been unloaded.`);
+                }
+            });
+
+
+        }
+
     </script>
 </body>
 
