@@ -25,20 +25,20 @@ pub async fn save_menu(
     let mut categories = Vec::new();
 
     // Since we allowed for 2 categories, iterate over 0..1
-    for i in 0..2 {
+    for i in 0.. {
         let category_name_key = format!("category_name_{}", i);
-        if let Some(category_name) = form.get(&category_name_key) {
-            if !category_name.is_empty() {
+        match form.get(&category_name_key) {
+            Some(category_name) => if !category_name.is_empty() {
                 let mut items = Vec::new();
 
                 // For each category, iterate over 0..2 for items
-                for j in 0..3 {
+                for j in 0.. {
                     let item_name_key = format!("item_name_{}_{}", i, j);
                     let item_price_key = format!("item_price_{}_{}", i, j);
                     let item_description_key = format!("item_description_{}_{}", i, j);
 
-                    if let Some(item_name) = form.get(&item_name_key) {
-                        if !item_name.is_empty() {
+                    match form.get(&item_name_key) {
+                        Some(item_name) => if !item_name.is_empty() {
                             let item_price = form.get(&item_price_key).cloned().unwrap_or_default();
                             let item_description = form.get(&item_description_key).cloned();
 
@@ -49,8 +49,9 @@ pub async fn save_menu(
                             };
 
                             items.push(item);
-                        }
-                    }
+                        },
+                        None => break,
+                    };
                 }
 
                 let category = Category {
@@ -59,7 +60,8 @@ pub async fn save_menu(
                 };
 
                 categories.push(category);
-            }
+            },
+            None => break,
         }
     }
 

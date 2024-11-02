@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="UTF-8">
     <title>Create Menu</title>
@@ -9,80 +10,247 @@
         .box {
             margin-bottom: 1rem;
         }
+
+        #image-preview {
+            max-width: 100%;
+            margin-bottom: 1rem;
+        }
     </style>
 </head>
+
 <body>
-<section class="section">
-    <div class="container">
-        <h1 class="title">Create Menu</h1>
-        <form action="/save_menu" method="post">
-            <input type="hidden" name="id" value="{{ id }}">
-            <!-- Restaurant Name -->
+    <section class="section">
+        <div class="container">
+            <h1 class="title">Create Menu</h1>
+
+            <!-- File Input and Parse Button -->
             <div class="field">
-                <label class="label">Restaurant Name</label>
+                <label class="label">Upload Menu Image</label>
                 <div class="control">
-                    <input class="input" type="text" name="restaurant" placeholder="Restaurant Name" required>
+                    <input class="input" type="file" id="menu-image" accept="image/*">
                 </div>
+                <figure class="image is-128x128">
+                    <img id="image-preview" src="#" alt="Image Preview" style="display: none;">
+                </figure>
+                <button class="button is-link" id="parse-button" type="button" disabled>Parse</button>
             </div>
-            <!-- Contact Information -->
-            <div class="field">
-                <label class="label">Contact</label>
-                <div class="control">
-                    <input class="input" type="text" name="contact" placeholder="Contact Information">
-                </div>
-            </div>
-            <div class="field"></div>
-                <label class="label">Tema</label>
-                <div class="control">
-                    <input class="input" type="text" name="contact" value="olive">
-                </div>
-            </div>
-            <!-- Categories and Items -->
-            <div class="field">
-                <label class="label">Categories</label>
-                <div class="control">
-                    {% for i in range(end=2) %}
-                    <div class="box">
-                        <!-- Category Name -->
-                        <div class="field">
-                            <label class="label">Category {{ i + 1 }} Name</label>
-                            <input class="input" type="text" name="category_name_{{ i }}" placeholder="Category Name">
-                        </div>
-                        <!-- Items -->
-                        <div class="field">
-                            <label class="label">Items</label>
-                            {% for j in range(end=3) %}
-                            <div class="box">
-                                <!-- Item Name -->
-                                <div class="field">
-                                    <label class="label">Item {{ j + 1 }} Name</label>
-                                    <input class="input" type="text" name="item_name_{{ i }}_{{ j }}" placeholder="Item Name">
-                                </div>
-                                <!-- Item Price -->
-                                <div class="field">
-                                    <label class="label">Item {{ j + 1 }} Price</label>
-                                    <input class="input" type="text" name="item_price_{{ i }}_{{ j }}" placeholder="Item Price">
-                                </div>
-                                <!-- Item Description -->
-                                <div class="field">
-                                    <label class="label">Item {{ j + 1 }} Description</label>
-                                    <textarea class="textarea" name="item_description_{{ i }}_{{ j }}" placeholder="Item Description"></textarea>
-                                </div>
-                            </div>
-                            {% endfor %}
-                        </div>
+
+            <!-- Form for Menu Creation -->
+            <!-- Form for Menu Creation -->
+            <form action="/save_menu" method="post" id="menu-form">
+                <input type="hidden" name="id" value="{{ id }}">
+                <!-- Restaurant Name -->
+                <div class="field">
+                    <label class="label">Restaurant Name</label>
+                    <div class="control">
+                        <input class="input" type="text" name="restaurant" placeholder="Restaurant Name" required>
                     </div>
-                    {% endfor %}
                 </div>
-            </div>
-            <!-- Submit Button -->
-            <div class="field">
-                <div class="control">
-                    <button class="button is-primary" type="submit">Save Menu</button>
+                <!-- Contact Information -->
+                <div class="field">
+                    <label class="label">Contact</label>
+                    <div class="control">
+                        <input class="input" type="text" name="contact" placeholder="Contact Information">
+                    </div>
                 </div>
-            </div>
-        </form>
-    </div>
-</section>
+                <!-- Theme -->
+                <div class="field">
+                    <label class="label">Theme</label>
+                    <div class="control">
+                        <input class="input" type="text" name="theme" value="olive">
+                    </div>
+                </div>
+                <!-- Categories and Items -->
+                <div class="field" id="categories-container">
+                    <!-- Categories will be dynamically added here -->
+                </div>
+                <!-- Submit Button -->
+                <div class="field">
+                    <div class="control">
+                        <button class="button is-primary" type="submit">Save Menu</button>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </section>
+
+    <!-- JavaScript Section -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const menuImageInput = document.getElementById('menu-image');
+            const imagePreview = document.getElementById('image-preview');
+            const parseButton = document.getElementById('parse-button');
+            const menuForm = document.getElementById('menu-form');
+            const categoriesContainer = document.getElementById('categories-container');
+
+            // Handle Image Selection
+            menuImageInput.addEventListener('change', () => {
+                const file = menuImageInput.files[0];
+                if (file) {
+                    // Show the image thumbnail
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        imagePreview.src = e.target.result;
+                        imagePreview.style.display = 'block';
+                    };
+                    reader.readAsDataURL(file);
+                    parseButton.disabled = false;
+                } else {
+                    imagePreview.src = '#';
+                    imagePreview.style.display = 'none';
+                    parseButton.disabled = true;
+                }
+            });
+
+            // Handle Parse Button Click
+            parseButton.addEventListener('click', async () => {
+                event.preventDefault();
+                const file = menuImageInput.files[0];
+                if (!file) {
+                    alert('Please select an image.');
+                    return;
+                }
+
+                parseButton.disabled = true;
+                parseButton.textContent = 'Parsing...';
+
+                try {
+                    // Convert image to base64
+                    const base64Image = await toBase64(file);
+
+                    // Send image to server for parsing
+                    const response = await fetch('/parse_image', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ image: base64Image }),
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Error parsing image.');
+                    }
+
+                    const data = await response.json();
+
+                    // Prefill the form with parsed data
+                    prefillForm(data);
+
+                    parseButton.textContent = 'Parse';
+                    parseButton.disabled = false;
+                } catch (error) {
+                    console.error(error);
+                    alert('An error occurred while parsing the image.');
+                    parseButton.textContent = 'Parse';
+                    parseButton.disabled = false;
+                }
+            });
+
+            // Helper function to convert image to base64
+            function toBase64(file) {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        resolve(e.target.result.split(',')[1]); // Remove data:image/*;base64,
+                    };
+                    reader.onerror = function (error) {
+                        reject(error);
+                    };
+                    reader.readAsDataURL(file);
+                });
+            }
+            function prefillForm(parsedData) {
+                // Clear existing categories
+                categoriesContainer.innerHTML = '';
+
+                // Set restaurant name, contact, and theme
+                menuForm.elements['restaurant'].value = parsedData.restaurant || '';
+                menuForm.elements['contact'].value = parsedData.contact || '';
+                menuForm.elements['theme'].value = parsedData.theme || 'olive';
+
+                // Iterate over categories
+                parsedData.menu.categories.forEach((category, i) => {
+                    const categoryBox = document.createElement('div');
+                    categoryBox.classList.add('box');
+
+                    // Category Name
+                    const categoryField = document.createElement('div');
+                    categoryField.classList.add('field');
+                    const categoryLabel = document.createElement('label');
+                    categoryLabel.classList.add('label');
+                    categoryLabel.textContent = `Category ${i + 1} Name`;
+                    const categoryInput = document.createElement('input');
+                    categoryInput.classList.add('input');
+                    categoryInput.type = 'text';
+                    categoryInput.name = `category_name_${i}`; // Corrected line
+                    categoryInput.placeholder = 'Category Name';
+                    categoryInput.value = category.name || '';
+                    categoryField.appendChild(categoryLabel);
+                    categoryField.appendChild(categoryInput);
+                    categoryBox.appendChild(categoryField);
+
+                    // Items
+                    category.items.forEach((item, j) => {
+                        const itemBox = document.createElement('div');
+                        itemBox.classList.add('box');
+
+                        // Item Name
+                        const itemNameField = document.createElement('div');
+                        itemNameField.classList.add('field');
+                        const itemNameLabel = document.createElement('label');
+                        itemNameLabel.classList.add('label');
+                        itemNameLabel.textContent = `Item ${j + 1} Name`;
+                        const itemNameInput = document.createElement('input');
+                        itemNameInput.classList.add('input');
+                        itemNameInput.type = 'text';
+                        itemNameInput.name = `item_name_${i}_${j}`;
+                        itemNameInput.placeholder = 'Item Name';
+                        itemNameInput.value = item.name || '';
+                        itemNameField.appendChild(itemNameLabel);
+                        itemNameField.appendChild(itemNameInput);
+                        itemBox.appendChild(itemNameField);
+
+                        // Item Price
+                        const itemPriceField = document.createElement('div');
+                        itemPriceField.classList.add('field');
+                        const itemPriceLabel = document.createElement('label');
+                        itemPriceLabel.classList.add('label');
+                        itemPriceLabel.textContent = `Item ${j + 1} Price`;
+                        const itemPriceInput = document.createElement('input');
+                        itemPriceInput.classList.add('input');
+                        itemPriceInput.type = 'text';
+                        itemPriceInput.name = `item_price_${i}_${j}`;
+                        itemPriceInput.placeholder = 'Item Price';
+                        itemPriceInput.value = item.price || '';
+                        itemPriceField.appendChild(itemPriceLabel);
+                        itemPriceField.appendChild(itemPriceInput);
+                        itemBox.appendChild(itemPriceField);
+
+                        // Item Description
+                        const itemDescField = document.createElement('div');
+                        itemDescField.classList.add('field');
+                        const itemDescLabel = document.createElement('label');
+                        itemDescLabel.classList.add('label');
+                        itemDescLabel.textContent = `Item ${j + 1} Description`;
+                        const itemDescTextarea = document.createElement('textarea');
+                        itemDescTextarea.classList.add('textarea');
+                        itemDescTextarea.name = `item_description_${i}_${j}`;
+                        itemDescTextarea.placeholder = 'Item Description';
+                        itemDescTextarea.value = item.description || '';
+                        itemDescField.appendChild(itemDescLabel);
+                        itemDescField.appendChild(itemDescTextarea);
+                        itemBox.appendChild(itemDescField);
+
+                        categoryBox.appendChild(itemBox);
+                    });
+
+                    categoriesContainer.appendChild(categoryBox);
+                });
+            }
+
+        });
+    </script>
 </body>
+
 </html>
