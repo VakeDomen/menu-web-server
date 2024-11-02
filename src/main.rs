@@ -21,7 +21,7 @@ async fn main() -> std::io::Result<()> {
     HttpServer::new(move || {
         App::new()
             .app_data(web::Data::new(tera.clone()))
-            .app_data(web::JsonConfig::default().limit(1024 * 1024 * 100))
+            .app_data(web::JsonConfig::default().limit(4096 * 4096 * 100))
             .service(Files::new("/static", "web"))
             .route("/serve", web::get().to(serve_menu))
             .route("/save_menu", web::post().to(save_menu))
