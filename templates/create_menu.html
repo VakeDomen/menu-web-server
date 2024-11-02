@@ -50,7 +50,12 @@
             <div id="imageupload" class="field">
                 <label class="label">Upload Menu Image</label>
                 <div class="control">
-                    <input class="input" type="file" id="menu-image" accept="image/*">
+                    <button class="button" id="gallery-button" type="button">Select from Gallery</button>
+                    <button class="button" id="camera-button" type="button">Take Photo</button>
+                    <!-- Hidden file inputs -->
+                    <input class="input" type="file" id="gallery-input" accept="image/*" style="display: none;">
+                    <input class="input" type="file" id="camera-input" accept="image/*" capture="environment"
+                        style="display: none;">
                 </div>
                 <figure class="image is-128x128">
                     <img id="image-preview" src="#" alt="Image Preview" style="display: none;">
@@ -93,7 +98,8 @@
                         <div id="categories-container">
                             <!-- Categories will be dynamically added here -->
                         </div>
-                        <button type="button" class="button is-link is-light" id="add-category-button">Add Category</button>
+                        <button type="button" class="button is-link is-light" id="add-category-button">Add
+                            Category</button>
                     </div>
                     <!-- Submit Button -->
                     <div class="field">
@@ -109,7 +115,6 @@
     <!-- JavaScript Section -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const menuImageInput = document.getElementById('menu-image');
             const imagePreview = document.getElementById('image-preview');
             const parseButton = document.getElementById('parse-button');
             const menuForm = document.getElementById('menu-form');
@@ -119,14 +124,33 @@
             const loadingDiv = document.getElementById("loading")
             const menuDiv = document.getElementById("menu")
 
+            const galleryButton = document.getElementById('gallery-button');
+            const cameraButton = document.getElementById('camera-button');
+            const galleryInput = document.getElementById('gallery-input');
+            const cameraInput = document.getElementById('camera-input');
+
             const addCategoryButton = document.getElementById('add-category-button');
 
-            // Index trackers
-            let categoryIndex = 0;
+            // Array to keep track of categories
+            let categoriesList = [];
 
-            // Handle Image Selection
-            menuImageInput.addEventListener('change', () => {
-                const file = menuImageInput.files[0];
+
+            // Variable to store the selected file
+            let selectedFile = null;
+
+            // Handle gallery button click
+            galleryButton.addEventListener('click', () => {
+                galleryInput.click();
+            });
+
+            // Handle camera button click
+            cameraButton.addEventListener('click', () => {
+                cameraInput.click();
+            });
+
+            // Handle image selection
+            function handleImageSelection(input) {
+                const file = input.files[0];
                 if (file) {
                     // Show the image thumbnail
                     const reader = new FileReader();
@@ -136,17 +160,28 @@
                     };
                     reader.readAsDataURL(file);
                     parseButton.disabled = false;
+                    // Store the selected file
+                    selectedFile = file;
                 } else {
                     imagePreview.src = '#';
                     imagePreview.style.display = 'none';
                     parseButton.disabled = true;
+                    selectedFile = null;
                 }
+            }
+
+            galleryInput.addEventListener('change', () => {
+                handleImageSelection(galleryInput);
+            });
+
+            cameraInput.addEventListener('change', () => {
+                handleImageSelection(cameraInput);
             });
 
             // Handle Parse Button Click
-            parseButton.addEventListener('click', async () => {
+            parseButton.addEventListener('click', async (event) => {
                 event.preventDefault();
-                const file = menuImageInput.files[0];
+                const file = selectedFile;
                 if (!file) {
                     alert('Please select an image.');
                     return;
@@ -207,7 +242,6 @@
                     reader.readAsDataURL(file);
                 });
             }
-
             function prefillForm(parsedData) {
                 // Clear existing categories
                 categoriesContainer.innerHTML = '';
@@ -226,12 +260,46 @@
                 });
             }
 
-            // Function to add a new category
+            function moveItemToCategory(itemBox, newCategoryIndex) {
+                const oldCategoryIndex = parseInt(itemBox.dataset.categoryIndex);
+                const itemIndex = parseInt(itemBox.dataset.itemIndex);
+
+                // Remove itemBox from old category's items container
+                const oldCategory = categoriesList.find(cat => cat.index === oldCategoryIndex);
+                oldCategory.itemsContainer.removeChild(itemBox);
+
+                // Update the categoryIndex in itemBox
+                itemBox.dataset.categoryIndex = newCategoryIndex;
+
+                // Add itemBox to new category's items container
+                const newCategory = categoriesList.find(cat => cat.index === newCategoryIndex);
+                newCategory.itemsContainer.appendChild(itemBox);
+
+                // Reindex items in old category
+                reindexItemsInCategory(oldCategoryIndex);
+
+                // Reindex items in new category
+                reindexItemsInCategory(newCategoryIndex);
+            }
+
+            function reindexItemsInCategory(categoryIndex) {
+                const category = categoriesList.find(cat => cat.index === categoryIndex);
+                const itemsContainer = category.itemsContainer;
+                const itemBoxes = itemsContainer.querySelectorAll('.item-box');
+                itemBoxes.forEach((itemBox, index) => {
+                    itemBox.dataset.itemIndex = index;
+                    // Update the name attributes
+                    updateItemNameAttributes(itemBox, categoryIndex, index);
+                });
+            }
+
+
             function addCategory(categoryData = null) {
                 const i = categoryIndex++;
 
                 const categoryBox = document.createElement('div');
                 categoryBox.classList.add('box', 'category-box');
+                categoryBox.dataset.categoryIndex = i; // Store the category index
 
                 // Category Header (Accordion)
                 const categoryHeader = document.createElement('div');
@@ -254,6 +322,7 @@
 
                 removeCategoryButton.addEventListener('click', () => {
                     categoriesContainer.removeChild(categoryBox);
+                    updateCategoryOptionsInItems();
                 });
 
                 // Toggle category content visibility
@@ -284,6 +353,8 @@
                 editCategoryNameInput.addEventListener('input', () => {
                     categoryNameInput.value = editCategoryNameInput.value;
                     categoryTitle.textContent = editCategoryNameInput.value || `Category ${i + 1}`;
+                    updateCategoryOptionsInItems();
+                    reindexItemsInCategory();
                 });
 
                 editCategoryNameControl.appendChild(editCategoryNameInput);
@@ -320,14 +391,64 @@
                 categoryBox.appendChild(categoryHeader);
                 categoryBox.appendChild(categoryContent);
                 categoriesContainer.appendChild(categoryBox);
+                // Add the category to the categoriesList
+                categoriesList.push({
+                    index: i,
+                    nameInput: categoryNameInput,
+                    titleElement: categoryTitle,
+                    itemsContainer: itemsContainer,
+                    categoryBox: categoryBox
+                });
+
+                // Update category options in all items
+                updateCategoryOptionsInItems();
+
+                // Rest of your existing code...
+            }
+            function updateItemNameAttributes(itemBox, categoryIndex, itemIndex) {
+                // Update the name attributes of inputs in the itemBox
+                const inputs = itemBox.querySelectorAll('input, textarea');
+                inputs.forEach(input => {
+                    if (input.name.startsWith('item_name_') || input.name.startsWith('item_price_') || input.name.startsWith('item_description_')) {
+                        const nameParts = input.name.split('_');
+                        const fieldType = nameParts[0] + '_' + nameParts[1];
+                        input.name = `${fieldType}_${categoryIndex}_${itemIndex}`;
+                    }
+                });
             }
 
-            // Function to add a new item to a category
-            function addItem(categoryIndex, itemsContainer, itemData = null) {
+            function updateCategoryOptionsInItems() {
+                // For each item in each category, update the category options
+                categoriesList.forEach(cat => {
+                    const itemsContainer = cat.itemsContainer;
+                    const itemBoxes = itemsContainer.querySelectorAll('.item-box');
+                    itemBoxes.forEach(itemBox => {
+                        const moveCategorySelect = itemBox.querySelector('select');
+                        const currentCategoryIndex = parseInt(itemBox.dataset.categoryIndex);
+                        // Clear existing options
+                        moveCategorySelect.innerHTML = '';
+                        // Populate category options
+                        categoriesList.forEach(catOption => {
+                            const option = document.createElement('option');
+                            option.value = catOption.index;
+                            option.textContent = catOption.nameInput.value || `Category ${catOption.index + 1}`;
+                            if (catOption.index === currentCategoryIndex) {
+                                option.selected = true;
+                            }
+                            moveCategorySelect.appendChild(option);
+                        });
+                    });
+                });
+            }
+
+
+            function addItem(currentCategoryIndex, itemsContainer, itemData = null) {
                 const itemIndex = itemsContainer.childElementCount;
 
                 const itemBox = document.createElement('div');
                 itemBox.classList.add('box', 'item-box');
+                itemBox.dataset.categoryIndex = currentCategoryIndex;
+                itemBox.dataset.itemIndex = itemIndex;
 
                 // Remove Item Button
                 const removeItemButton = document.createElement('button');
@@ -337,18 +458,55 @@
 
                 removeItemButton.addEventListener('click', () => {
                     itemsContainer.removeChild(itemBox);
+                    // Reindex items in the category
+                    reindexItemsInCategory(currentCategoryIndex);
                 });
 
+                // Move to Category Dropdown
+                const moveCategoryField = document.createElement('div');
+                moveCategoryField.classList.add('field');
+                const moveCategoryLabel = document.createElement('label');
+                moveCategoryLabel.classList.add('label');
+                moveCategoryLabel.textContent = 'Move to Category';
+                const moveCategoryControl = document.createElement('div');
+                moveCategoryControl.classList.add('control');
+                const moveCategorySelect = document.createElement('select');
+                moveCategorySelect.classList.add('input');
+
+                // Populate category options
+                categoriesList.forEach(cat => {
+                    const option = document.createElement('option');
+                    option.value = cat.index;
+                    option.textContent = cat.nameInput.value || `Category ${cat.index + 1}`;
+                    if (cat.index === currentCategoryIndex) {
+                        option.selected = true;
+                    }
+                    moveCategorySelect.appendChild(option);
+                });
+
+                // Event listener for changing category
+                moveCategorySelect.addEventListener('change', () => {
+                    const newCategoryIndex = parseInt(moveCategorySelect.value);
+                    if (newCategoryIndex !== currentCategoryIndex) {
+                        moveItemToCategory(itemBox, newCategoryIndex);
+                    }
+                });
+
+                moveCategoryControl.appendChild(moveCategorySelect);
+                moveCategoryField.appendChild(moveCategoryLabel);
+                moveCategoryField.appendChild(moveCategoryControl);
+
                 // Item Name
-                const itemNameField = createInputField(`Item Name`, `item_name_${categoryIndex}_${itemIndex}`, itemData ? itemData.name || '' : '');
+                const itemNameField = createInputField(`Item Name`, `item_name_${currentCategoryIndex}_${itemIndex}`, itemData ? itemData.name || '' : '');
 
                 // Item Price
-                const itemPriceField = createInputField(`Item Price`, `item_price_${categoryIndex}_${itemIndex}`, itemData ? itemData.price || '' : '');
+                const itemPriceField = createInputField(`Item Price`, `item_price_${currentCategoryIndex}_${itemIndex}`, itemData ? itemData.price || '' : '');
 
                 // Item Description
-                const itemDescField = createTextareaField(`Item Description`, `item_description_${categoryIndex}_${itemIndex}`, itemData ? itemData.description || '' : '');
+                const itemDescField = createTextareaField(`Item Description`, `item_description_${currentCategoryIndex}_${itemIndex}`, itemData ? itemData.description || '' : '');
 
                 itemBox.appendChild(removeItemButton);
+                itemBox.appendChild(moveCategoryField); // Add move to category field
                 itemBox.appendChild(itemNameField);
                 itemBox.appendChild(itemPriceField);
                 itemBox.appendChild(itemDescField);
