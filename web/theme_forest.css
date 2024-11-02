@@ -1,0 +1,40 @@
+/* Forest Theme */
+.section {
+    padding: 1%;
+}
+
+.box {
+    background-color: #a7c957; /* Light Green */
+}
+
+.is-item {
+    font-weight: 600;
+    background-color: #a7c957; /* Light Green */
+    overflow-wrap: break-word;
+    hyphens: manual;
+}
+
+.is-description {
+    background-color: #6a994e; /* Medium Green */
+    font-size: smaller;
+    font-weight: 300;
+    overflow-wrap: break-word;
+    hyphens: manual;
+}
+
+html {
+    background-color: #386641; /* Dark Green */
+}
+
+.is-price {
+    font-weight: 300;
+}
+
+.tabs.is-toggle li.is-active a {
+    background-color: #2f3e46; /* Very Dark Green */
+    border-color: #2f3e46;
+}
+
+.tabs.is-toggle a:hover {
+    background-color: #6a994e; /* Medium Green */
+}

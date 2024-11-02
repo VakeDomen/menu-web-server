@@ -1,0 +1,40 @@
+/* Lavender Theme */
+.section {
+    padding: 1%;
+}
+
+.box {
+    background-color: #cdb4db; /* Light Lavender */
+}
+
+.is-item {
+    font-weight: 600;
+    background-color: #cdb4db; /* Light Lavender */
+    overflow-wrap: break-word;
+    hyphens: manual;
+}
+
+.is-description {
+    background-color: #ffc8dd; /* Soft Pink */
+    font-size: smaller;
+    font-weight: 300;
+    overflow-wrap: break-word;
+    hyphens: manual;
+}
+
+html {
+    background-color: #6d6875; /* Muted Purple */
+}
+
+.is-price {
+    font-weight: 300;
+}
+
+.tabs.is-toggle li.is-active a {
+    background-color: #b5838d; /* Dusty Rose */
+    border-color: #b5838d;
+}
+
+.tabs.is-toggle a:hover {
+    background-color: #ffc8dd; /* Soft Pink */
+}

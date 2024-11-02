@@ -1,0 +1,40 @@
+/* Midnight Theme */
+.section {
+    padding: 1%;
+}
+
+.box {
+    background-color: #2b2d42; /* Dark Blue */
+}
+
+.is-item {
+    font-weight: 600;
+    background-color: #2b2d42; /* Dark Blue */
+    overflow-wrap: break-word;
+    hyphens: manual;
+}
+
+.is-description {
+    background-color: #8d99ae; /* Grayish Blue */
+    font-size: smaller;
+    font-weight: 300;
+    overflow-wrap: break-word;
+    hyphens: manual;
+}
+
+html {
+    background-color: #1a1a2e; /* Very Dark Blue */
+}
+
+.is-price {
+    font-weight: 300;
+}
+
+.tabs.is-toggle li.is-active a {
+    background-color: #16213e; /* Deep Blue */
+    border-color: #16213e;
+}
+
+.tabs.is-toggle a:hover {
+    background-color: #8d99ae; /* Grayish Blue */
+}

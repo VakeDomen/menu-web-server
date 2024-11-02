@@ -1,0 +1,40 @@
+/* Ocean Theme */
+.section {
+    padding: 1%;
+}
+
+.box {
+    background-color: #a2d2ff; /* Light Blue */
+}
+
+.is-item {
+    font-weight: 600;
+    background-color: #a2d2ff; /* Light Blue */
+    overflow-wrap: break-word;
+    hyphens: manual;
+}
+
+.is-description {
+    background-color: #bde0fe; /* Lighter Blue */
+    font-size: smaller;
+    font-weight: 300;
+    overflow-wrap: break-word;
+    hyphens: manual;
+}
+
+html {
+    background-color: #457b9d; /* Deep Blue */
+}
+
+.is-price {
+    font-weight: 300;
+}
+
+.tabs.is-toggle li.is-active a {
+    background-color: #1d3557; /* Dark Blue */
+    border-color: #1d3557;
+}
+
+.tabs.is-toggle a:hover {
+    background-color: #bde0fe; /* Lighter Blue */
+}
