@@ -4,6 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Create Menu</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
     <!-- Include Bulma CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
     <style>
@@ -11,20 +13,24 @@
             margin-bottom: 1rem;
         }
 
-        #image-preview {
-            max-width: 100%;
-            margin-bottom: 1rem;
+        #loading {
+            display: none;
+        }
+
+        #menu {
+            display: none;
         }
     </style>
 </head>
 
 <body>
+
     <section class="section">
         <div class="container">
             <h1 class="title">Create Menu</h1>
 
             <!-- File Input and Parse Button -->
-            <div class="field">
+            <div id="imageupload" class="field">
                 <label class="label">Upload Menu Image</label>
                 <div class="control">
                     <input class="input" type="file" id="menu-image" accept="image/*">
@@ -35,43 +41,47 @@
                 <button class="button is-link" id="parse-button" type="button" disabled>Parse</button>
             </div>
 
-            <!-- Form for Menu Creation -->
-            <!-- Form for Menu Creation -->
-            <form action="/save_menu" method="post" id="menu-form">
-                <input type="hidden" name="id" value="{{ id }}">
-                <!-- Restaurant Name -->
-                <div class="field">
-                    <label class="label">Restaurant Name</label>
-                    <div class="control">
-                        <input class="input" type="text" name="restaurant" placeholder="Restaurant Name" required>
-                    </div>
-                </div>
-                <!-- Contact Information -->
-                <div class="field">
-                    <label class="label">Contact</label>
-                    <div class="control">
-                        <input class="input" type="text" name="contact" placeholder="Contact Information">
-                    </div>
-                </div>
-                <!-- Theme -->
-                <div class="field">
-                    <label class="label">Theme</label>
-                    <div class="control">
-                        <input class="input" type="text" name="theme" value="olive">
-                    </div>
-                </div>
-                <!-- Categories and Items -->
-                <div class="field" id="categories-container">
-                    <!-- Categories will be dynamically added here -->
-                </div>
-                <!-- Submit Button -->
-                <div class="field">
-                    <div class="control">
-                        <button class="button is-primary" type="submit">Save Menu</button>
-                    </div>
-                </div>
-            </form>
+            <div id="loading">
+                <progress class="progress is-small is-primary" max="100">15%</progress>
+            </div>
 
+            <!-- Form for Menu Creation -->
+            <div id="menu">
+                <form action="/save_menu" method="post" id="menu-form">
+                    <input type="hidden" name="id" value="{{ id }}">
+                    <!-- Restaurant Name -->
+                    <div class="field">
+                        <label class="label">Restaurant Name</label>
+                        <div class="control">
+                            <input class="input" type="text" name="restaurant" placeholder="Restaurant Name" required>
+                        </div>
+                    </div>
+                    <!-- Contact Information -->
+                    <div class="field">
+                        <label class="label">Contact</label>
+                        <div class="control">
+                            <input class="input" type="text" name="contact" placeholder="Contact Information">
+                        </div>
+                    </div>
+                    <!-- Theme -->
+                    <div class="field">
+                        <label class="label">Theme</label>
+                        <div class="control">
+                            <input class="input" type="text" name="theme" value="olive">
+                        </div>
+                    </div>
+                    <!-- Categories and Items -->
+                    <div class="field" id="categories-container">
+                        <!-- Categories will be dynamically added here -->
+                    </div>
+                    <!-- Submit Button -->
+                    <div class="field">
+                        <div class="control">
+                            <button class="button is-primary" type="submit">Save Menu</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
         </div>
     </section>
 
@@ -83,6 +93,10 @@
             const parseButton = document.getElementById('parse-button');
             const menuForm = document.getElementById('menu-form');
             const categoriesContainer = document.getElementById('categories-container');
+
+            const imageUploadDiv = document.getElementById("imageupload")
+            const loadingDiv = document.getElementById("loading")
+            const menuDiv = document.getElementById("menu")
 
             // Handle Image Selection
             menuImageInput.addEventListener('change', () => {
@@ -115,6 +129,9 @@
                 parseButton.disabled = true;
                 parseButton.textContent = 'Parsing...';
 
+                imageUploadDiv.style.display = "none";
+                loadingDiv.style.display = "block";
+
                 try {
                     // Convert image to base64
                     const base64Image = await toBase64(file);
@@ -139,11 +156,15 @@
 
                     parseButton.textContent = 'Parse';
                     parseButton.disabled = false;
+                    loadingDiv.style.display = "none";
+                    menuDiv.style.display = "block";
                 } catch (error) {
                     console.error(error);
                     alert('An error occurred while parsing the image.');
                     parseButton.textContent = 'Parse';
                     parseButton.disabled = false;
+                    loadingDiv.style.display = "none";
+                    imageUploadDiv.style.display = "block";
                 }
             });
 
