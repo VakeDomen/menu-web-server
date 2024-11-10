@@ -53,3 +53,9 @@ function createTextareaField(labelText, textareaName, textareaValue) {
 
     return field;
 }
+
+function decodeHtmlEntities(str) {
+    const txt = document.createElement("textarea");
+    txt.innerHTML = str;
+    return txt.value;
+}

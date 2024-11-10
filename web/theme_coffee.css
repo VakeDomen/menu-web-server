@@ -1,0 +1,56 @@
+/* Sunset Theme */
+
+#restaurant-name {
+    background-color: #ffffffd4;
+}
+
+.box {
+    padding: 8px;
+    background-color: #ffffffd4;
+}
+
+.tabs {
+    background-color: #ffffffd4;
+}
+
+.is-item {
+    font-weight: 600;
+    background-color: #ff000078; /* Light Green */
+}
+
+.is-description {
+    background-color: #ff000078; /* Medium Green */
+    font-size: smaller;
+    font-weight: 300;
+}
+
+html {
+    /*background-color: #386641; /* Dark Green */
+    background-image: url("/static/assets/coffee.jpeg");
+}
+
+.is-price {
+    font-weight: 300;
+}
+
+.tabs.is-toggle li.is-active a {
+    background-color: #ff000078; /* Very Dark Green */
+    border-color: #2f3e46;
+    color: #2f3e46;
+    border-color: none;
+}
+
+.tabs.is-toggle a:hover {
+    background-color: #ff666687; /* Medium Green */
+}
+
+.tabs.is-toggle a {
+    border-color: unset;
+}
+
+
+.price {
+    color: #2f3e46;
+    /* background-color: ; */
+    border-radius: 3px;
+}

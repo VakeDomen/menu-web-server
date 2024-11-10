@@ -1,5 +1,5 @@
 {
-  "restaurant": "Grill &amp; Bar Serminec",
+  "restaurant": "Grill & Bar Serminec",
   "contact": "070-315-839",
   "menu": {
     "categories": [
@@ -130,5 +130,5 @@
       }
     ]
   },
-  "theme": "forest"
+  "theme": "pizza"
 }

@@ -24,8 +24,8 @@ function prefillForm(parsedData) {
     categoriesList = [];
 
     // Set restaurant name, contact, and theme
-    menuForm.elements['restaurant'].value = parsedData.restaurant || '';
-    menuForm.elements['contact'].value = parsedData.contact || '';
+    menuForm.elements['restaurant'].value = decodeHtmlEntities(parsedData.restaurant || '');
+    menuForm.elements['contact'].value = decodeHtmlEntities(parsedData.contact || '');
     const themeRadio = menuForm.querySelector(`input[name="theme"][value="${parsedData.theme}"]`);
     if (themeRadio) {
         themeRadio.checked = true;

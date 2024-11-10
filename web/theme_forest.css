@@ -30,9 +30,6 @@
 html {
     /*background-color: #386641; /* Dark Green */
     background-image: url("/static/assets/forest.jpg");
-    background-repeat: no-repeat;
-    background-size: cover;
-    min-height: 100vh;
 }
 
 .is-price {

@@ -3,8 +3,8 @@
 
 
 #restaurant-name {
-    color: #cebf70;
-    background-color: #00000066;
+    color: #ffed8b;
+    background-color: #221a15f0;
 }
 
 .title {
@@ -12,7 +12,7 @@
 }
 
 .box, .box > .label {
-    background-color: #00000066; /* Light Green */
+    background-color: #221a15f0; /* Light Green */
     padding: 8px;
     color: #cebf70;
 }
@@ -22,25 +22,26 @@
 }
 
 html {
-    background-color: #1e1f2d; /* Dark Green
-    /* background-image: url("/static/assets/pizza.jpg"); */
+    /*background-color: #386641; /* Dark Green */
+    background-image: url("/static/assets/pizza.jpg");
+}
+
+.price {
+    font-weight: 300;
 }
 
 .tabs.is-toggle li.is-active a {
-    color: #46412f; /* Very Dark Green */
+    background-color: #46412f; /* Very Dark Green */
     border-color: #2f3e46;
-    background-color: #d7c77688;
+    color: #cebf70;
     border-color: none;
 }
 
 .tabs.is-toggle a:hover {
     background-color: #cebf70b8; /* Medium Green */
-    color: #2f3e46;
 }
 
 .tabs.is-toggle a {
-    background-color: #2f3e46;
-    color: #cebf70;
     border-color: unset;
 }
 
@@ -53,6 +54,4 @@ span.price {
     color: #cebf70;
     /* background-color: #2f3e46; */
     border-radius: 3px;
-    font-weight: 300;
 }
-
