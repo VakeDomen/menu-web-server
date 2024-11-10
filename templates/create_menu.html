@@ -8,6 +8,9 @@
 
     <!-- Include Bulma CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <script src="/static/css_util.js"></script> 
+    <script src="/static/image_util.js"></script> 
+    <script src="/static/dom_util.js"></script> 
     <style>
 
         .label {
@@ -71,9 +74,8 @@
                     </div>
                 </div>
                 <div class="control has-text-centered">
-                    <button class="button" id="gallery-button" type="button">Select from Gallery</button>
+                    <button class="button" id="gallery-button" type="button">Menu Image</button>
                     <br>
-                    <button class="button" id="camera-button" type="button">Take Photo</button>
                     <!-- Hidden file inputs -->
                     <input class="input" type="file" id="gallery-input" accept="image/*" style="display: none;">
                     <input class="input" type="file" id="camera-input" accept="image/*" capture="environment"
@@ -122,7 +124,7 @@
                         <label class="label">Theme</label>
                         <div class="control">
                             <label class="radio">
-                                <input type="radio" name="theme1" value="none">
+                                <input type="radio" name="theme" value="none">
                                 Brez
                             </label>
                             
@@ -207,36 +209,8 @@
                 galleryInput.click();
             });
 
-            // Handle camera button click
-            cameraButton.addEventListener('click', () => {
-                cameraInput.click();
-            });
-
             loadedCssFiles = [];
             
-
-            // Handle image selection
-            function handleImageSelection(input) {
-                const file = input.files[0];
-                if (file) {
-                    // Show the image thumbnail
-                    const reader = new FileReader();
-                    reader.onload = function (e) {
-                        imagePreview.src = e.target.result;
-                        imagePreview.style.display = 'block';
-                    };
-                    reader.readAsDataURL(file);
-                    parseButton.disabled = false;
-                    // Store the selected file
-                    selectedFile = file;
-                } else {
-                    imagePreview.src = '#';
-                    imagePreview.style.display = 'none';
-                    parseButton.disabled = true;
-                    selectedFile = null;
-                }
-            }
-
 
 
             galleryInput.addEventListener('change', () => {
@@ -264,10 +238,6 @@
                 imageUploadDiv.style.display = "none";
                 menuDiv.style.display = "block";
             })
-
-            function longUrl(url) {
-                return "/static/theme_" + url + ".css"
-            }
 
             // Handle Parse Button Click
             parseButton.addEventListener('click', async (event) => {
@@ -320,19 +290,7 @@
                 }
             });
 
-            // Helper function to convert image to base64
-            function toBase64(file) {
-                return new Promise((resolve, reject) => {
-                    const reader = new FileReader();
-                    reader.onload = function (e) {
-                        resolve(e.target.result.split(',')[1]); // Remove data:image/*;base64,
-                    };
-                    reader.onerror = function (error) {
-                        reject(error);
-                    };
-                    reader.readAsDataURL(file);
-                });
-            }
+            
             function prefillForm(parsedData) {
                 // Clear existing categories
                 categoriesContainer.innerHTML = '';
@@ -397,13 +355,11 @@
             function addCategory(categoryData = null) {
                 const i = categoryIndex++;
 
-                const categoryBox = document.createElement('div');
-                categoryBox.classList.add('box', 'category-box');
+                const categoryBox = createDiv(['box', 'category-box']);
                 categoryBox.dataset.categoryIndex = i; // Store the category index
 
                 // Category Header (Accordion)
-                const categoryHeader = document.createElement('div');
-                categoryHeader.classList.add('category-header', 'is-flex', 'is-align-items-center');
+                const categoryHeader = createDiv(['category-header', 'is-flex', 'is-align-items-center']);
                 const categoryTitle = document.createElement('span');
                 categoryTitle.textContent = categoryData ? categoryData.name || `Category ${i + 1}` : `Category ${i + 1}`;
                 categoryTitle.style.flexGrow = '1';
@@ -415,11 +371,7 @@
                 categoryNameInput.value = categoryData ? categoryData.name || '' : '';
 
                 // Remove Category Button
-                const removeCategoryButton = document.createElement('button');
-                removeCategoryButton.type = 'button';
-                removeCategoryButton.classList.add('button', 'is-small', 'is-danger', 'remove-button');
-                removeCategoryButton.textContent = 'Remove Category';
-
+                const removeCategoryButton = createButton('Remove Category', ['button', 'is-small', 'is-danger', 'remove-button']);
                 removeCategoryButton.addEventListener('click', () => {
                     categoriesContainer.removeChild(categoryBox);
                     updateCategoryOptionsInItems();
@@ -435,17 +387,12 @@
                 categoryHeader.appendChild(categoryNameInput);
 
                 // Category Content
-                const categoryContent = document.createElement('div');
-                categoryContent.classList.add('category-content');
+                const categoryContent = createDiv(['category-content']);
 
                 // Edit Category Name Field
-                const editCategoryNameField = document.createElement('div');
-                editCategoryNameField.classList.add('field');
-                const editCategoryNameLabel = document.createElement('label');
-                editCategoryNameLabel.classList.add('label');
-                editCategoryNameLabel.textContent = 'Category Name';
-                const editCategoryNameControl = document.createElement('div');
-                editCategoryNameControl.classList.add('control');
+                const editCategoryNameField = createDiv(['field']);
+                const editCategoryNameLabel = createLabel('Category Name');
+                const editCategoryNameControl = createDiv(['control']);
                 const editCategoryNameInput = document.createElement('input');
                 editCategoryNameInput.classList.add('input');
                 editCategoryNameInput.type = 'text';
@@ -462,21 +409,15 @@
                 categoryContent.appendChild(editCategoryNameField);
 
                 // Items Container
-                const itemsContainer = document.createElement('div');
-                itemsContainer.classList.add('items-container');
+                const itemsContainer = createDiv(['items-container']);
 
                 categoryContent.appendChild(itemsContainer);
 
                 // Add Item Button
-                const buttonContainer = document.createElement('div');
-                buttonContainer.classList.add('items-container');
+                const buttonContainer = createDiv(['items-container']);
                 categoryContent.appendChild(buttonContainer);
 
-                const addItemButton = document.createElement('button');
-                addItemButton.type = 'button';
-                addItemButton.classList.add('button', 'is-small', 'is-link', 'is-light', 'add-item-button');
-                addItemButton.textContent = 'Add Item';
-
+                const addItemButton = createButton('Add Item', ['button', 'is-small', 'is-link', 'is-light', 'add-item-button']);
                 addItemButton.addEventListener('click', () => {
                     addItem(i, itemsContainer);
                 });
@@ -547,20 +488,13 @@
             function addItem(currentCategoryIndex, itemsContainer, itemData = null) {
                 const itemIndex = itemsContainer.childElementCount;
 
-                const itemBox = document.createElement('div');
-                itemBox.classList.add('box', 'item-box', 'is-description');
+                const itemBox = createDiv(['box', 'item-box', 'is-description']);
                 itemBox.dataset.categoryIndex = currentCategoryIndex;
                 itemBox.dataset.itemIndex = itemIndex;
 
                 // Remove Item Button
-                const removeItemRow = document.createElement('div');
-                removeItemRow.classList.add('has-text-right')
-
-                const removeItemButton = document.createElement('button');
-                removeItemButton.type = 'button';
-                removeItemButton.classList.add('button', 'is-small', 'is-danger', 'remove-button');
-                removeItemButton.textContent = 'Remove Item';
-
+                const removeItemRow = createDiv(['has-text-right'])
+                const removeItemButton = createButton('Remove Item', ['button', 'is-small', 'is-danger', 'remove-button']);
                 removeItemRow.appendChild(removeItemButton)
 
                 removeItemButton.addEventListener('click', () => {
@@ -570,13 +504,9 @@
                 });
 
                 // Move to Category Dropdown
-                const moveCategoryField = document.createElement('div');
-                moveCategoryField.classList.add('level');
-                const moveCategoryLabel = document.createElement('label');
-                moveCategoryLabel.classList.add('level-left');
-                moveCategoryLabel.textContent = 'Move to Category';
-                const moveCategoryControl = document.createElement('div');
-                moveCategoryControl.classList.add('level-right', 'mt-0');
+                const moveCategoryField = createDiv(['level']);
+                const moveCategoryLabel = createLabel("Move to Category", ['level-left'])
+                const moveCategoryControl = createDiv(['level-right', 'mt-0']);
                 const moveCategorySelect = document.createElement('select');
 
                 // Populate category options
@@ -620,48 +550,6 @@
                 itemsContainer.appendChild(itemBox);
             }
 
-            // Helper function to create input fields
-            function createInputField(labelText, inputName, inputValue) {
-                const field = document.createElement('div');
-                field.classList.add('field');
-                const label = document.createElement('label');
-                label.classList.add('label');
-                label.textContent = labelText;
-                const control = document.createElement('div');
-                control.classList.add('control');
-                const input = document.createElement('input');
-                input.classList.add('input');
-                input.type = 'text';
-                input.name = inputName;
-                input.value = inputValue;
-
-                control.appendChild(input);
-                field.appendChild(label);
-                field.appendChild(control);
-
-                return field;
-            }
-
-            // Helper function to create textarea fields
-            function createTextareaField(labelText, textareaName, textareaValue) {
-                const field = document.createElement('div');
-                field.classList.add('field');
-                const label = document.createElement('label');
-                label.classList.add('label');
-                label.textContent = labelText;
-                const control = document.createElement('div');
-                control.classList.add('control');
-                const textarea = document.createElement('textarea');
-                textarea.classList.add('textarea');
-                textarea.name = textareaName;
-                textarea.value = textareaValue;
-
-                control.appendChild(textarea);
-                field.appendChild(label);
-                field.appendChild(control);
-
-                return field;
-            }
 
             // Event listener for Add Category button
             addCategoryButton.addEventListener('click', () => {
@@ -669,55 +557,7 @@
             });
         });
 
-        function loadCss(url) {
-            // Check if the CSS is already loaded to prevent duplicates
-            if (document.querySelector(`link[href="${url}"]`)) {
-                console.warn(`CSS file "${url}" is already loaded.`);
-                return;
-            }
-
-            // Create a new link element
-            const link = document.createElement('link');
-            link.rel = 'stylesheet';
-            link.type = 'text/css';
-            link.href = url;
-            link.id = `css-${encodeURIComponent(url)}`; // Optional: Assign an ID for easier reference
-
-            // Optionally, handle load and error events
-            link.onload = () => {
-                console.log(`CSS file "${url}" has been loaded successfully.`);
-                loadedCssFiles.push(url)
-            };
-
-            link.onerror = () => {
-                console.error(`Failed to load CSS file "${url}".`);
-            };
-
-            // Append the link element to the head
-            document.head.appendChild(link);
-        }
-
-
-        function unloadCss(url) {
-            console.log("unloading " + url + "...")
-            // Select all link elements with the matching href
-            const links = document.querySelectorAll(`link[href="${url}"]`);
-
-            if (links.length === 0) {
-                console.warn(`No CSS file found with URL "${url}".`);
-                return;
-            }
-
-            // Remove each found link element from the head
-            links.forEach(link => {
-                if (link.parentNode) {
-                    link.parentNode.removeChild(link);
-                    console.log(`CSS file "${url}" has been unloaded.`);
-                }
-            });
-
-
-        }
+        
 
     </script>
 </body>
