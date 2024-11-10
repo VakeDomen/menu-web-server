@@ -59,10 +59,13 @@
 </head>
 
 <body>
+    {% if menu_data %}
+        <div id="menu-data" style="display: none;">{{ menu_data | json_encode | safe }}</div>
+    {% endif %}
 
     <section class="section">
         <div class="container">
-            <h1 class="title has-text-centered">Create Menu</h1>
+            <h1 class="title has-text-centered">Menu</h1>
 
             <!-- File Input and Parse Button -->
             <div id="imageupload" class="field">
@@ -101,20 +104,20 @@
                      <!-- Submit Button -->
                      <div class="field has-text-centered">
                         <div class="control">
-                            <button class="button is-primary" type="submit">Save Menu</button>
+                            <button class="button is-primary" type="submit">Shrani</button>
                         </div>
                     </div>
                     <input type="hidden" name="id" value="{{ id }}">
                     <!-- Restaurant Name -->
                     <div class="field">
-                        <label class="label">Restaurant Name</label>
+                        <label class="label">Ime</label>
                         <div class="control">
                             <input class="input" type="text" name="restaurant" placeholder="Restaurant Name" required>
                         </div>
                     </div>
                     <!-- Contact Information -->
                     <div class="field">
-                        <label class="label">Contact</label>
+                        <label class="label">Kontakt</label>
                         <div class="control">
                             <input class="input" type="text" name="contact" placeholder="Contact Information">
                         </div>
@@ -168,9 +171,7 @@
                             <!-- Categories will be dynamically added here -->
                         </div>
                         <button type="button" class="button is-link is-light" id="add-category-button">Add Category</button>
-
                     </div>
-                   
                 </form>
             </div>
         </div>
@@ -179,29 +180,38 @@
     <!-- JavaScript Section -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            setMenuUtilRefs(
-                document.getElementById('menu-form'),
-                document.getElementById('categories-container'),
-                document.getElementById("theme-input"),
-                document.getElementById('add-category-button'),
-            )
+        // Existing initialization code
+        setMenuUtilRefs(
+            document.getElementById('menu-form'),
+            document.getElementById('categories-container'),
+            document.getElementById("theme-input"),
+            document.getElementById('add-category-button'),
+        );
 
-            setTransitionRefs(
-                document.getElementById("imageupload"),
-                document.getElementById("loading"),
-                document.getElementById("menu"),
-            )
+        setTransitionRefs(
+            document.getElementById("imageupload"),
+            document.getElementById("loading"),
+            document.getElementById("menu"),
+        );
 
-            setParsingUtilRefs(
-                document.getElementById('image-preview'),
-                document.getElementById('parse-button'),
-                document.getElementById("parse-manual"),
-                document.getElementById('gallery-button'),
-                document.getElementById('gallery-input')
-            )
-        });
-
+        setParsingUtilRefs(
+            document.getElementById('image-preview'),
+            document.getElementById('parse-button'),
+            document.getElementById("parse-manual"),
+            document.getElementById('gallery-button'),
+            document.getElementById('gallery-input')
+        );
         
+        const menuDataScript = document.getElementById('menu-data');
+        if (menuDataScript) {
+            const menuData = JSON.parse(menuDataScript.innerHTML);
+            prefillForm(menuData);
+            toMenu(); // Directly show the menu form
+        } else {
+            // No menu_data, start with image upload or manual creation
+            toUpload(); // Ensure we show the correct view
+        }
+    });
 
     </script>
 </body>

@@ -1,117 +1,134 @@
 {
-    "restaurant": "Grill & Bar Serminec",
-    "contact": "070-315-839",
-    "theme": "olive",
-    "menu": {
-      "categories": [
-        {
-          "name": "Jedi iz žara",
-          "items": [
-            {
-              "name": "Čevapi v lepinji",
-              "description": "viski i žaaar",
-              "price": "6.80€"
-            },
-            {
-              "name": "Čevapi v testu",
-              "description": "viski i žaaar",
-              "price": "8.50€"
-            },
-            {
-              "name": "Ombola v testu",
-              "description": "viski i žaaar",
-              "price": "9.50€"
-            },
-            {
-              "name": "Karađorđev zrezek, pomfri",
-              "price": "8.00€"
-            },
-            {
-              "name": "Pohani zrezek, pomfri",
-              "price": "7.00€"
-            }
-          ]
-        },
-        {
-          "name": "Hamburgerji",
-          "items": [
-            {
-              "name": "Burger embelesk",
-              "price": "8.00€"
-            },
-            {
-              "name": "Čebatta burger",
-              "price": "8.50€"
-            },
-            {
-              "name": "Hamburger",
-              "price": "6.00€"
-            },
-            {
-              "name": "Cheeseburger",
-              "price": "6.00€"
-            },
-            {
-              "name": "Serminec",
-              "price": "6.00€"
-            }
-          ]
-        },
-        {
-          "name": "Plošče",
-          "items": [
-            {
-              "name": "Mesna plošča za 2 osebe",
-              "price": "17.00€"
-            },
-            {
-              "name": "Mesna plošča za 4 osebe",
-              "price": "27.00€"
-            },
-            {
-              "name": "Serminec MIX za 2 osebe",
-              "price": "16.00€"
-            }
-          ]
-        },
-        {
-          "name": "Pizze",
-          "items": [
-            {
-              "name": "Margerita",
-              "price": "6.30€"
-            },
-            {
-              "name": "4 tetel casi",
-              "price": "7.20€"
-            },
-            {
-              "name": "Istrska",
-              "price": "7.50€"
-            },
-            {
-              "name": "Ekstra",
-              "price": "8.00€"
-            },
-            {
-              "name": "Serminec",
-              "price": "8.80€"
-            },
-            {
-              "name": "Tartufata",
-              "price": "9.50€"
-            },
-            {
-              "name": "Funghi",
-              "price": "8.00€"
-            },
-            {
-              "name": "Zelenjava",
-              "price": "7.00€"
-            }
-          ]
-        }
-      ]
-    }
-  }
-  
+  "restaurant": "Grill &amp; Bar Serminec",
+  "contact": "070-315-839",
+  "menu": {
+    "categories": [
+      {
+        "name": "Jedi iz žar",
+        "items": [
+          {
+            "name": "Čevapi v lepinji",
+            "price": "6.80€",
+            "description": "viski i žaaar"
+          },
+          {
+            "name": "Čevapi v testu",
+            "price": "8.50€",
+            "description": "viski i žaaar"
+          },
+          {
+            "name": "Ombola v testu",
+            "price": "9.50€",
+            "description": "viski i žaaar"
+          },
+          {
+            "name": "Karađorđev zrezek, pomfri",
+            "price": "8.00€",
+            "description": null
+          },
+          {
+            "name": "Pohani zrezek, pomfri",
+            "price": "7.00€",
+            "description": null
+          }
+        ]
+      },
+      {
+        "name": "Hamburgerji",
+        "items": [
+          {
+            "name": "Burger embelesk",
+            "price": "8.00€",
+            "description": null
+          },
+          {
+            "name": "Čebatta burger",
+            "price": "8.50€",
+            "description": null
+          },
+          {
+            "name": "Hamburger",
+            "price": "6.00€",
+            "description": null
+          },
+          {
+            "name": "Cheeseburger",
+            "price": "6.00€",
+            "description": null
+          },
+          {
+            "name": "Serminec",
+            "price": "6.00€",
+            "description": null
+          }
+        ]
+      },
+      {
+        "name": "Plošče",
+        "items": [
+          {
+            "name": "Mesna plošča za 2 osebe",
+            "price": "17.00€",
+            "description": null
+          },
+          {
+            "name": "Mesna plošča za 4 osebe",
+            "price": "27.00€",
+            "description": null
+          },
+          {
+            "name": "Serminec MIX za 2 osebe",
+            "price": "16.00€",
+            "description": null
+          }
+        ]
+      },
+      {
+        "name": "Pizze",
+        "items": [
+          {
+            "name": "Margerita",
+            "price": "6.30€",
+            "description": null
+          },
+          {
+            "name": "4 tetel casi",
+            "price": "7.20€",
+            "description": null
+          },
+          {
+            "name": "Istrska",
+            "price": "7.50€",
+            "description": null
+          },
+          {
+            "name": "Ekstra",
+            "price": "8.00€",
+            "description": null
+          },
+          {
+            "name": "Serminec",
+            "price": "8.80€",
+            "description": null
+          },
+          {
+            "name": "Tartufata",
+            "price": "9.50€",
+            "description": null
+          },
+          {
+            "name": "Funghi",
+            "price": "8.00€",
+            "description": null
+          },
+          {
+            "name": "Zelenjava",
+            "price": "7.00€",
+            "description": null
+          }
+        ]
+      }
+    ]
+  },
+  "theme": "olive"
+}

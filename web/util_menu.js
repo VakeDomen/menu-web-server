@@ -19,13 +19,18 @@ function prefillForm(parsedData) {
     // Clear existing categories
     categoriesContainer.innerHTML = '';
 
-    // Reset category index
+    // Reset category index and categoriesList
     categoryIndex = 0;
+    categoriesList = [];
 
     // Set restaurant name, contact, and theme
     menuForm.elements['restaurant'].value = parsedData.restaurant || '';
     menuForm.elements['contact'].value = parsedData.contact || '';
-    menuForm.elements['theme'].value = parsedData.theme || '';
+    const themeRadio = menuForm.querySelector(`input[name="theme"][value="${parsedData.theme}"]`);
+    if (themeRadio) {
+        themeRadio.checked = true;
+        loadCss(longUrl(parsedData.theme));
+    }
 
     // Iterate over categories
     parsedData.menu.categories.forEach((category) => {
@@ -35,11 +40,10 @@ function prefillForm(parsedData) {
     themeInput.addEventListener("change", (event) => {
         while (loadedCssFiles.length > 0) {
             let url = loadedCssFiles.pop();
-            unloadCss(url)
+            unloadCss(url);
         }
-        
-        loadCss(longUrl(event.target.value))
-    })
+        loadCss(longUrl(event.target.value));
+    });
 }
 
 function moveItemToCategory(itemBox, newCategoryIndex) {
