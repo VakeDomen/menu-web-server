@@ -1,29 +1,38 @@
 /* Forest Theme */
-.section {
-    padding: 1%;
+
+
+
+#restaurant-name {
+    color: #ffed8b;
+    background-color: #2f3e46;
 }
 
 .box {
-    background-color: #a7c957; /* Light Green */
+    background-color: #b2d282d6; /* Light Green */
+    padding: 8px;
+}
+
+.tabs {
+    background-color: #a7c957b8; 
 }
 
 .is-item {
     font-weight: 600;
     background-color: #a7c957; /* Light Green */
-    overflow-wrap: break-word;
-    hyphens: manual;
 }
 
 .is-description {
     background-color: #6a994e; /* Medium Green */
     font-size: smaller;
     font-weight: 300;
-    overflow-wrap: break-word;
-    hyphens: manual;
 }
 
 html {
-    background-color: #386641; /* Dark Green */
+    /*background-color: #386641; /* Dark Green */
+    background-image: url("/static/assets/forest.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    min-height: 100vh;
 }
 
 .is-price {
@@ -33,8 +42,21 @@ html {
 .tabs.is-toggle li.is-active a {
     background-color: #2f3e46; /* Very Dark Green */
     border-color: #2f3e46;
+    color: #ffed8b;
+    border-color: none;
 }
 
 .tabs.is-toggle a:hover {
     background-color: #6a994e; /* Medium Green */
+}
+
+.tabs.is-toggle a {
+    border-color: unset;
+}
+
+
+.price {
+    color: #ffed8b;
+    background-color: #2f3e46;
+    border-radius: 3px;
 }

@@ -8,6 +8,7 @@
     <!-- Include Bulma CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
     
+    <!-- Include Theme CSS based on selected theme -->
     {% if restaurant.theme == "olive" %}
         <link rel="stylesheet" href="/static/theme_olive.css">
     {% elif restaurant.theme == "forest" %}        
@@ -22,49 +23,81 @@
         <link rel="stylesheet" href="/static/theme_sunset.css">
     {% endif %}
 
-    <!-- Custom JavaScript for tabs and accordion functionality -->
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Tab functionality
-            const tabs = document.querySelectorAll('.tabs li');
-            const tabsContent = document.querySelectorAll('.tab-content');
+    <!-- Custom CSS for animations and background control -->
+    <style>
+        /* Prevent excess scrolling beyond the content */
+        body, html {
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
 
-            tabs.forEach((tab) => {
-                tab.addEventListener('click', () => {
-                    const target = tab.dataset.target;
+        #restaurant-name {
+            border-radius: 10px;
+        }
 
-                    // Remove 'is-active' class from all tabs and content
-                    tabs.forEach((t) => t.classList.remove('is-active'));
-                    tabsContent.forEach((content) => content.classList.add('is-hidden'));
+        .title.menu-item-title {
+            margin-bottom: 10px; 
+        }
 
-                    // Add 'is-active' class to the selected tab and display the content
-                    tab.classList.add('is-active');
-                    document.getElementById(target).classList.remove('is-hidden');
-                });
-            });
+        .is-item {
+            overflow-wrap: break-word;
+            hyphens: manual;
+        }
 
-            // Accordion functionality
-            const accordions = document.querySelectorAll('.accordion-trigger');
+        .is-description {
+            overflow-wrap: break-word;
+            hyphens: manual;
+        }
 
-            accordions.forEach((acc) => {
-                acc.addEventListener('click', () => {
-                    const content = acc.nextElementSibling;
-                    acc.classList.toggle('is-active');
-                    content.classList.toggle('is-hidden');
-                });
-            });
-        });
-    </script>
+        .price {
+            padding: 2px;
+        }
 
-    
-        
+        .column {
+            padding: 8px;
+        }
+
+        .section {
+            padding: 1%;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .tab-container {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tab-content {
+            opacity: 0;
+            transform: translateX(10px);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            pointer-events: none;
+        }
+
+        .tab-content.is-active {
+            opacity: 1;
+            transform: translateX(0);
+            position: relative;
+            pointer-events: auto;
+        }
+
+        .container {
+            overflow: hidden;
+        }
+    </style>
 </head>
 <body>
 <section class="section">
     <div class="container">
 
         <!-- Header -->
-        <h1 class="title has-text-centered">{{ restaurant.restaurant }}</h1>
+        <h1 id="restaurant-name" class="title has-text-centered">{{ restaurant.restaurant }}</h1>
 
         <!-- Tabs Navigation -->
         <div class="tabs is-toggle is-fullwidth is-centered">
@@ -78,36 +111,51 @@
         </div>
 
         <!-- Tab Content Sections -->
-        {% for category in restaurant.menu.categories %}
-            <div id="tab{{ loop.index0 }}" class="tab-content{% if not loop.first %} is-hidden{% endif %}">
-                <div class="box">
-                    <table class="table is-fullwidth">
-                        <tbody>
-                            {% for item in category.items %}
-                                {% if item.description %}
-                                    <!-- Item with description (accordion) -->
-                                    <tr class="is-item">
-                                        <td>{{ item.name }}</td>
-                                        <td class="is-price has-text-right">{{ item.price }}</td>
-                                    </tr>
-                                    <tr class="is-description">
-                                        <td colspan="2">{{ item.description }}</td>
-                                    </tr>
-                                {% else %}
-                                    <!-- Item without description -->
-                                    <tr class="is-item">
-                                        <td>{{ item.name }}</td>
-                                        <td class="is-price has-text-right">{{ item.price }}</td>
-                                    </tr>
-                                {% endif %}
-                            {% endfor %}
-                        </tbody>
-                    </table>
+        <div class="tab-container">
+            {% for category in restaurant.menu.categories %}
+                <div id="tab{{ loop.index0 }}" class="tab-content{% if loop.first %} is-active{% endif %}">
+                    {% for item in category.items %}
+                        <div class="box">
+                            <div class="columns is-vcentered">
+                                <div class="column">
+                                    <p class="title is-5 menu-item-title">{{ item.name }}</p>
+                                    {% if item.description %}
+                                        <p>{{ item.description }}</p>
+                                    {% endif %}
+                                </div>
+                                <div class="column is-narrow">
+                                    <p class="title is-5 has-text-right"><span class="price">{{ item.price }}</span></p>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
                 </div>
-            </div>
-        {% endfor %}
+            {% endfor %}
+        </div>
 
     </div>
 </section>
+
+<!-- Custom JavaScript for tabs functionality with animations -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const tabs = document.querySelectorAll('.tabs li');
+        const tabsContent = document.querySelectorAll('.tab-content');
+
+        tabs.forEach((tab) => {
+            tab.addEventListener('click', () => {
+                const target = tab.dataset.target;
+
+                // Remove 'is-active' class from all tabs and tab content
+                tabs.forEach((t) => t.classList.remove('is-active'));
+                tabsContent.forEach((content) => content.classList.remove('is-active'));
+
+                // Add 'is-active' class to the selected tab and tab content
+                tab.classList.add('is-active');
+                document.getElementById(target).classList.add('is-active');
+            });
+        });
+    });
+</script>
 </body>
 </html>

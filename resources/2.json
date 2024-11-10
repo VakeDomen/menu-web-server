@@ -7,9 +7,104 @@
         "name": "bla",
         "items": [
           {
-            "name": "bla",
-            "price": "1€",
-            "description": "blablabl"
+            "name": "Čevapi v lepinji",
+            "price": "6.80€",
+            "description": "Kebabčići s lepinjo"
+          },
+          {
+            "name": "Čevapi s testu",
+            "price": "8.50€",
+            "description": "Pohanj zredek, pomfri"
+          },
+          {
+            "name": "Ombola v testu",
+            "price": "9.50€",
+            "description": "Tartufata, sir stinano"
+          },
+          {
+            "name": "Karadžozdež z zrezkom",
+            "price": "8.00€",
+            "description": "Pohanj zredek, pomfri"
+          },
+          {
+            "name": "Pohanj zredek",
+            "price": "7.00€",
+            "description": "Pomfri"
+          },
+          {
+            "name": "Čevapi v lepinji",
+            "price": "6.80€",
+            "description": "Kebabčići s lepinjo"
+          },
+          {
+            "name": "Čevapi s testu",
+            "price": "8.50€",
+            "description": "Pohanj zredek, pomfri"
+          },
+          {
+            "name": "Ombola v testu",
+            "price": "9.50€",
+            "description": "Tartufata, sir stinano"
+          },
+          {
+            "name": "Karadžozdež z zrezkom",
+            "price": "8.00€",
+            "description": "Pohanj zredek, pomfri"
+          },
+          {
+            "name": "Pohanj zredek",
+            "price": "7.00€",
+            "description": "Pomfri"
+          },
+          {
+            "name": "Čevapi v lepinji",
+            "price": "6.80€",
+            "description": "Kebabčići s lepinjo"
+          },
+          {
+            "name": "Čevapi s testu",
+            "price": "8.50€",
+            "description": "Pohanj zredek, pomfri"
+          },
+          {
+            "name": "Ombola v testu",
+            "price": "9.50€",
+            "description": "Tartufata, sir stinano"
+          },
+          {
+            "name": "Karadžozdež z zrezkom",
+            "price": "8.00€",
+            "description": "Pohanj zredek, pomfri"
+          },
+          {
+            "name": "Pohanj zredek",
+            "price": "7.00€",
+            "description": "Pomfri"
+          },
+          {
+            "name": "Čevapi v lepinji",
+            "price": "6.80€",
+            "description": "Kebabčići s lepinjo"
+          },
+          {
+            "name": "Čevapi s testu",
+            "price": "8.50€",
+            "description": "Pohanj zredek, pomfri"
+          },
+          {
+            "name": "Ombola v testu",
+            "price": "9.50€",
+            "description": "Tartufata, sir stinano"
+          },
+          {
+            "name": "Karadžozdež z zrezkom",
+            "price": "8.00€",
+            "description": "Pohanj zredek, pomfri"
+          },
+          {
+            "name": "Pohanj zredek",
+            "price": "7.00€",
+            "description": "Pomfri"
           }
         ]
       },
@@ -25,5 +120,5 @@
       }
     ]
   },
-  "theme": null
+  "theme": "forest"
 }
